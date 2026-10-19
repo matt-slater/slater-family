@@ -12,8 +12,6 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 var(--body)}
 a{color:var(--doc)}
-.sitenav{max-width:900px;margin:0 auto;padding:14px 16px 0;font-size:13.5px;color:var(--muted)}
-.sitenav a[aria-current]{color:var(--ink);font-weight:600;text-decoration:none}
 main{max-width:900px;margin:0 auto;padding:20px 16px 56px}
 h1{font:600 clamp(30px,5vw,44px)/1.1 var(--display);margin:18px 0 8px;text-wrap:balance}
 h2{font:600 26px/1.2 var(--display);margin:40px 0 10px;padding-top:12px;border-top:1px solid var(--rule)}
@@ -44,3 +42,14 @@ ol.line .p{display:inline-block;font-size:11px;letter-spacing:.06em;text-transfo
 ul.check{list-style:none;padding-left:0}
 ul.check li::before{content:"☐ ";color:var(--muted)}
 footer{max-width:900px;margin:0 auto;padding:20px 16px 40px;color:var(--muted);font-size:13px;border-top:1px solid var(--rule)}
+
+/* Site navigation */
+.topbar{position:sticky;top:0;z-index:50;background:var(--plate);border-bottom:1px solid var(--rule);box-shadow:0 1px 0 rgba(0,0,0,.03)}
+.topbar .in{max-width:1240px;margin:0 auto;padding:10px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px}
+.topbar .brand{font:600 21px/1.2 "Spectral",Georgia,serif;color:var(--ink);text-decoration:none;margin-right:auto}
+.topbar ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.topbar a.tab{display:block;font:600 15.5px/1 "Public Sans",system-ui,sans-serif;color:var(--ink);text-decoration:none;padding:10px 14px;border-radius:6px;border:1px solid transparent}
+.topbar a.tab:hover{background:var(--bg);border-color:var(--rule)}
+.topbar a.tab[aria-current="page"]{background:var(--ink);color:var(--plate)}
+.topbar a.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:640px){.topbar .brand{width:100%;margin:0}.topbar ul{width:100%}.topbar a.tab{padding:9px 11px;font-size:14.5px}}
