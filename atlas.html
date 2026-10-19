@@ -1,0 +1,267 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Slater Line Atlas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: survey-sheet atlas — map plate on the left, generation ledger on the right; stacks on phones */
+:root{
+  --bg:#eef1f3; --plate:#f8fafb; --land:#e2e7e3; --land-hi:#d3ddd5; --border:#9aa7ab; --ink:#1d2a30; --muted:#5b6a70;
+  --rule:#cfd7da; --accent:#a4442b; --doc:#2f5d73; --prob:#b07d1c; --water:#dbe6ec;
+  --display:"Spectral",Georgia,"Times New Roman",serif; --body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#141b1f; --plate:#1a2328; --land:#24302f; --land-hi:#2e3d3a; --border:#4c5c60; --ink:#e3e9ea; --muted:#9aa9ad;
+  --rule:#2c393e; --accent:#e07a5c; --doc:#79aec6; --prob:#e0b45a; --water:#18242b; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#141b1f; --plate:#1a2328; --land:#24302f; --land-hi:#2e3d3a; --border:#4c5c60; --ink:#e3e9ea; --muted:#9aa9ad;
+  --rule:#2c393e; --accent:#e07a5c; --doc:#79aec6; --prob:#e0b45a; --water:#18242b; color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 40px}
+header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 24px;margin-bottom:18px}
+h1{font-family:var(--display);font-weight:600;font-size:clamp(28px,4vw,40px);line-height:1.1;margin:0;text-wrap:balance}
+.sub{color:var(--muted);margin:6px 0 0;max-width:62ch}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:26px;height:0;border-top:2.5px solid var(--doc)}
+.sw.p{border-top:2.5px dashed var(--prob)}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:1fr}}
+.plate{background:var(--plate);border:1px solid var(--rule);border-radius:6px;padding:10px;position:relative;min-width:0}
+.plate svg{display:block;width:100%;height:auto}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+button{font:inherit;font-size:13px;border:1px solid var(--border);background:var(--plate);color:var(--ink);border-radius:4px;padding:6px 12px;cursor:pointer}
+button:hover{border-color:var(--ink)}
+button:focus-visible,.gen:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--ink);color:var(--plate);border-color:var(--ink)}
+.hint{font-size:12px;color:var(--muted);margin-left:auto}
+.ledger{display:flex;flex-direction:column;gap:0;min-width:0;border-top:1px solid var(--rule)}
+.gen{display:grid;grid-template-columns:34px minmax(0,1fr);gap:4px 10px;padding:12px 6px;border-bottom:1px solid var(--rule);cursor:pointer;background:none;text-align:left;width:100%;border-left:0;border-right:0;border-top:0;border-radius:0}
+.gen:hover{background:color-mix(in srgb,var(--land) 45%,transparent)}
+.gen.on{background:color-mix(in srgb,var(--land-hi) 70%,transparent)}
+.num{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:3px}
+.gname{font-family:var(--display);font-size:18px;font-weight:600;line-height:1.25}
+.dates{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:400;margin-left:6px}
+.conf{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;border-radius:3px;padding:1px 6px;margin-top:4px}
+.conf.d{color:var(--doc);border:1px solid var(--doc)}
+.conf.p{color:var(--prob);border:1px solid var(--prob)}
+.events{grid-column:2;list-style:none;margin:6px 0 0;padding:0;display:none;font-size:13.5px}
+.gen.on .events{display:block}
+.events li{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;padding:3px 0}
+.events .y{font-family:var(--mono);color:var(--accent);font-size:12.5px;padding-top:1px}
+.events .pl{color:var(--muted)}
+.note{margin-top:20px;font-size:13px;color:var(--muted);max-width:75ch}
+.note b{color:var(--ink);font-weight:600}
+.state{fill:var(--land);stroke:var(--border);stroke-width:.7}
+.statelbl{fill:var(--muted);font-family:var(--display);font-style:italic;font-size:12px;opacity:.75;pointer-events:none}
+.dot{fill:var(--plate);stroke:var(--muted);stroke-width:1.2}
+.dot.on{fill:var(--accent);stroke:var(--plate);stroke-width:1.5}
+.plbl{font-family:var(--body);font-size:11.5px;fill:var(--ink);paint-order:stroke;stroke:var(--plate);stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.route{fill:none;stroke-width:2.2;stroke-linecap:round}
+.route.d{stroke:var(--doc)} .route.p{stroke:var(--prob);stroke-dasharray:6 5}
+.route.faint{opacity:.22}
+.arrowd{fill:var(--doc)} .arrowp{fill:var(--prob)}
+.cap{position:absolute;left:18px;bottom:16px;font-family:var(--display);font-size:15px;background:color-mix(in srgb,var(--plate) 85%,transparent);padding:4px 8px;border-radius:3px;max-width:70%}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.sitenav{max-width:1240px;margin:0 auto;padding:14px 16px 0;font-size:13.5px;color:var(--muted)}.sitenav a{color:var(--doc)}
+body{margin:0}
+</style>
+</head><body>
+<nav class="sitenav"><a href="index.html">Slater Family</a> · <a href="origin.html">John's origin</a> · <a href="verses.html">1664 verses</a> · <a href="roswell.html">Roswell → William</a> · <a href="atlas.html" aria-current="page">Atlas</a></nav>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Slater Line Atlas</h1>
+    <p class="sub">Nine generations of the paternal line, from John Slaughter's marriage at Windsor in 1669 to Kenneth Harry Slater's death in Athens, Ohio, in 1987. Select a generation to see where they lived, moved and died.</p>
+  </div>
+  <div class="legend"><span><i class="sw"></i>Documented link</span><span><i class="sw p"></i>Probable link (not yet proven)</span></div>
+</header>
+<div class="grid">
+  <div>
+    <div class="plate">
+      <svg id="map" viewBox="0 0 800 560" role="img" aria-label="Map of Connecticut, New York, Pennsylvania and Ohio showing where each generation lived"></svg>
+      <div class="cap" id="cap">All generations</div>
+    </div>
+    <div class="controls">
+      <button id="all" aria-pressed="true">Whole line</button>
+      <button id="prev">Earlier</button>
+      <button id="next">Later</button>
+      <button id="play">Play the migration</button>
+      <span class="hint">Tip: the map zooms to each generation</span>
+    </div>
+  </div>
+  <div class="ledger" id="ledger"></div>
+</div>
+<p class="note"><b>Before 1669:</b> where John Slaughter came from is unknown; he appears in no Connecticut record before his marriage, and he always wrote his own name Slater. The family-tree link to the Slaughters of Upper Slaughter, Gloucestershire, rests on unsourced and merged profiles, so England is left off this map until a record or a Y-DNA match connects them. <b>Weakest link:</b> Roswell → William Johnson Slater, supported by place, timing and naming but not yet by a record that names William as Roswell's son. Locations are plotted at the town or township, not the exact farm.</p>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const STATES={"type":"FeatureCollection","features":[{"type":"Feature","id":"18","properties":{"name":"Indiana"},"geometry":{"type":"Polygon","coordinates":[[[-87.523,41.708],[-87.222,41.624],[-86.824,41.761],[-84.806,41.761],[-84.806,41.696],[-84.803,40.303],[-84.821,39.105],[-84.896,39.049],[-84.785,38.87],[-84.81,38.792],[-84.979,38.78],[-85.154,38.692],[-85.259,38.738],[-85.452,38.709],[-85.417,38.541],[-85.607,38.439],[-85.675,38.301],[-85.829,38.277],[-85.923,38.026],[-86.034,37.99],[-86.267,38.057],[-86.325,38.154],[-86.518,38.043],[-86.508,37.929],[-86.752,37.913],[-86.795,37.989],[-87.046,37.894],[-87.129,37.785],[-87.38,37.936],[-87.602,37.973],[-87.681,37.903],[-87.94,37.89],[-88.03,37.799],[-88.098,37.902],[-87.854,38.275],[-87.495,38.743],[-87.513,38.955],[-87.642,39.167],[-87.531,39.348],[-87.523,41.708]]]}},{"type":"Feature","id":"23","properties":{"name":"Maine"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-68.371,44.193],[-68.371,44.193],[-68.371,44.193],[-68.371,44.193]]],[[[-68.5,44.16],[-68.5,44.16],[-68.5,44.16],[-68.5,44.16]]],[[[-68.529,44.345],[-68.529,44.345],[-68.529,44.345],[-68.529,44.345]]],[[[-68.841,44.236],[-68.841,44.236],[-68.841,44.236],[-68.841,44.236]]],[[[-68.913,43.853],[-68.913,43.853],[-68.913,43.853],[-68.913,43.853]]],[[[-68.945,44.113],[-68.827,44.187],[-68.769,44.07],[-68.873,44.025],[-68.945,44.113]]],[[[-68.967,44.252],[-68.967,44.252],[-68.967,44.252],[-68.967,44.252]]],[[[-70.704,43.059],[-70.83,43.129],[-70.808,43.224],[-70.988,43.38],[-70.973,43.571],[-71.031,44.656],[-71.084,45.306],[-71.009,45.347],[-70.858,45.229],[-70.783,45.431],[-70.636,45.383],[-70.722,45.515],[-70.553,45.668],[-70.385,45.735],[-70.417,45.796],[-70.259,45.891],[-70.309,46.064],[-70.209,46.332],[-70.058,46.417],[-69.997,46.695],[-69.225,47.46],[-69.042,47.428],[-69.049,47.257],[-68.902,47.179],[-68.579,47.288],[-68.382,47.287],[-68.235,47.355],[-67.789,47.068],[-67.779,46.004],[-67.804,45.678],[-67.449,45.603],[-67.502,45.49],[-67.42,45.377],[-67.488,45.279],[-67.341,45.125],[-67.158,45.161],[-66.982,44.811],[-67.19,44.645],[-67.309,44.707],[-67.588,44.448],[-67.768,44.548],[-67.854,44.419],[-68.048,44.331],[-68.181,44.385],[-68.231,44.267],[-68.4,44.253],[-68.565,44.385],[-68.518,44.26],[-68.611,44.156],[-68.601,44.012],[-68.827,44.312],[-68.805,44.502],[-68.949,44.356],[-69.1,44.105],[-69.042,44.006],[-69.222,43.915],[-69.545,43.882],[-69.853,43.705],[-69.929,43.78],[-70.169,43.675],[-70.198,43.565],[-70.352,43.536],[-70.417,43.361],[-70.553,43.322],[-70.704,43.059]]]]}},{"type":"Feature","id":"25","properties":{"name":"Massachusetts"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-70.277,41.31],[-69.961,41.279],[-70.119,41.243],[-70.277,41.31]]],[[[-70.833,41.353],[-70.604,41.482],[-70.453,41.348],[-70.833,41.353]]],[[[-73.263,42.746],[-72.459,42.727],[-71.293,42.697],[-71.031,42.859],[-70.819,42.872],[-70.779,42.693],[-70.596,42.66],[-70.654,42.583],[-70.991,42.407],[-71.006,42.283],[-70.883,42.309],[-70.639,42.089],[-70.7,41.987],[-70.553,41.93],[-70.542,41.816],[-70.259,41.714],[-70.004,41.809],[-70.094,42.033],[-69.968,41.912],[-69.929,41.692],[-70.352,41.635],[-70.492,41.552],[-70.657,41.543],[-70.625,41.713],[-70.718,41.736],[-70.912,41.62],[-70.952,41.515],[-71.12,41.498],[-71.196,41.675],[-71.224,41.711],[-71.329,41.78],[-71.382,42.019],[-71.799,42.008],[-71.802,42.023],[-73.486,42.05],[-73.507,42.086],[-73.263,42.746]]]]}},{"type":"Feature","id":"34","properties":{"name":"New Jersey"},"geometry":{"type":"Polygon","coordinates":[[[-75.56,39.63],[-75.51,39.686],[-75.417,39.802],[-75.13,39.9],[-75.13,39.959],[-74.72,40.154],[-75.058,40.416],[-75.065,40.536],[-75.194,40.576],[-75.205,40.692],[-75.051,40.871],[-75.137,40.974],[-74.968,41.088],[-74.832,41.287],[-74.695,41.358],[-73.906,40.998],[-74.046,40.69],[-74.071,40.661],[-74.204,40.631],[-74.261,40.502],[-73.97,40.371],[-74.096,39.762],[-74.336,39.432],[-74.638,39.221],[-74.792,38.992],[-74.972,38.94],[-74.886,39.158],[-75.176,39.243],[-75.535,39.461],[-75.557,39.606],[-75.56,39.63]]]}},{"type":"Feature","id":"42","properties":{"name":"Pennsylvania"},"geometry":{"type":"Polygon","coordinates":[[[-80.521,41.978],[-79.763,42.27],[-79.76,41.998],[-76.748,42.002],[-75.359,41.999],[-75.262,41.866],[-75.112,41.84],[-75.076,41.606],[-74.896,41.44],[-74.695,41.358],[-74.832,41.287],[-74.968,41.088],[-75.137,40.974],[-75.051,40.871],[-75.205,40.692],[-75.194,40.576],[-75.065,40.536],[-75.058,40.416],[-74.72,40.154],[-75.13,39.959],[-75.13,39.9],[-75.417,39.802],[-75.578,39.839],[-75.79,39.722],[-79.476,39.721],[-80.521,39.721],[-80.521,40.639],[-80.521,41.978]]]}},{"type":"Feature","id":"09","properties":{"name":"Connecticut"},"geometry":{"type":"Polygon","coordinates":[[[-73.486,42.05],[-71.802,42.023],[-71.799,42.008],[-71.799,41.417],[-71.86,41.32],[-71.946,41.338],[-72.387,41.261],[-72.897,41.243],[-72.908,41.295],[-73.13,41.147],[-73.371,41.104],[-73.658,40.985],[-73.726,41.101],[-73.482,41.212],[-73.55,41.296],[-73.486,42.05]]]}},{"type":"Feature","id":"54","properties":{"name":"West Virginia"},"geometry":{"type":"Polygon","coordinates":[[[-82.595,38.422],[-82.323,38.449],[-82.294,38.575],[-82.172,38.619],[-82.218,38.796],[-82.028,39.029],[-81.888,38.874],[-81.766,39.02],[-81.755,39.181],[-81.569,39.268],[-81.468,39.404],[-81.386,39.343],[-81.21,39.393],[-80.829,39.714],[-80.74,40.076],[-80.6,40.321],[-80.668,40.573],[-80.521,40.639],[-80.521,39.721],[-79.476,39.721],[-79.487,39.206],[-79.096,39.473],[-78.956,39.44],[-78.78,39.622],[-78.654,39.535],[-78.468,39.517],[-78.353,39.64],[-78.184,39.695],[-77.89,39.558],[-77.721,39.322],[-77.829,39.133],[-78.346,39.466],[-78.403,39.167],[-78.87,38.763],[-78.995,38.85],[-79.211,38.493],[-79.311,38.412],[-79.476,38.457],[-79.649,38.591],[-79.688,38.432],[-79.921,38.18],[-80.011,37.986],[-80.183,37.853],[-80.295,37.692],[-80.219,37.628],[-80.298,37.508],[-80.474,37.423],[-80.51,37.482],[-80.768,37.372],[-80.858,37.427],[-80.919,37.306],[-81.224,37.235],[-81.361,37.338],[-81.554,37.208],[-81.676,37.202],[-81.928,37.359],[-81.967,37.537],[-82.118,37.56],[-82.294,37.671],[-82.34,37.786],[-82.502,37.933],[-82.463,37.981],[-82.638,38.139],[-82.574,38.264],[-82.595,38.422]]]}},{"type":"Feature","id":"10","properties":{"name":"Delaware"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-75.56,39.63],[-75.557,39.606],[-75.56,39.63],[-75.56,39.63]]],[[[-75.79,39.722],[-75.578,39.839],[-75.417,39.802],[-75.51,39.686],[-75.611,39.622],[-75.589,39.461],[-75.438,39.313],[-75.402,39.067],[-75.191,38.807],[-75.097,38.803],[-75.051,38.451],[-75.693,38.46],[-75.79,39.722]]]]}},{"type":"Feature","id":"21","properties":{"name":"Kentucky"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-89.131,36.982],[-89.182,37.027],[-89.078,37.175],[-88.916,37.225],[-88.46,37.074],[-88.424,37.15],[-88.518,37.284],[-88.478,37.387],[-88.083,37.473],[-88.159,37.665],[-88.03,37.799],[-87.94,37.89],[-87.681,37.903],[-87.602,37.973],[-87.38,37.936],[-87.129,37.785],[-87.046,37.894],[-86.795,37.989],[-86.752,37.913],[-86.508,37.929],[-86.518,38.043],[-86.325,38.154],[-86.267,38.057],[-86.034,37.99],[-85.923,38.026],[-85.829,38.277],[-85.675,38.301],[-85.607,38.439],[-85.417,38.541],[-85.452,38.709],[-85.259,38.738],[-85.154,38.692],[-84.979,38.78],[-84.81,38.792],[-84.785,38.87],[-84.896,39.049],[-84.821,39.105],[-84.602,39.074],[-84.444,39.115],[-84.325,39.028],[-84.214,38.805],[-83.848,38.747],[-83.665,38.628],[-83.521,38.703],[-83.31,38.601],[-83.155,38.621],[-82.893,38.756],[-82.847,38.595],[-82.725,38.558],[-82.595,38.422],[-82.574,38.264],[-82.638,38.139],[-82.463,37.981],[-82.502,37.933],[-82.34,37.786],[-82.294,37.671],[-82.118,37.56],[-81.967,37.537],[-82.355,37.265],[-82.725,37.116],[-82.879,36.889],[-83.073,36.854],[-83.137,36.743],[-83.676,36.601],[-83.69,36.583],[-84.544,36.596],[-85.291,36.627],[-85.488,36.615],[-86.59,36.653],[-87.854,36.634],[-88.069,36.678],[-88.055,36.497],[-89.3,36.507],[-89.419,36.499],[-89.372,36.621],[-89.261,36.565],[-89.16,36.666],[-89.131,36.982]]],[[[-89.487,36.497],[-89.541,36.498],[-89.487,36.497],[-89.487,36.497]]]]}},{"type":"Feature","id":"24","properties":{"name":"Maryland"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-75.995,37.953],[-76.045,37.953],[-75.995,37.953],[-75.995,37.953]]],[[[-76.095,38.125],[-76.095,38.125],[-76.095,38.125],[-76.095,38.125]]],[[[-76.397,38.771],[-76.397,38.771],[-76.397,38.771],[-76.397,38.771]]],[[[-79.476,39.721],[-75.79,39.722],[-75.693,38.46],[-75.051,38.451],[-75.241,38.027],[-75.625,37.994],[-75.668,37.951],[-75.894,37.917],[-75.847,38.21],[-76.009,38.312],[-76.167,38.243],[-76.336,38.492],[-76.235,38.628],[-76.027,38.566],[-76.336,38.773],[-76.192,38.822],[-76.232,38.943],[-76.375,38.85],[-76.303,39.026],[-76.199,39.014],[-76.278,39.146],[-76.185,39.319],[-76.041,39.388],[-75.969,39.558],[-76.095,39.537],[-76.102,39.436],[-76.443,39.195],[-76.393,39.012],[-76.519,38.863],[-76.519,38.539],[-76.386,38.361],[-76.436,38.293],[-76.321,38.139],[-76.321,38.037],[-76.44,38.161],[-76.799,38.237],[-76.974,38.347],[-77.018,38.445],[-77.208,38.36],[-77.276,38.482],[-77.129,38.635],[-77.039,38.792],[-76.91,38.893],[-77.043,38.994],[-77.118,38.934],[-77.247,39.027],[-77.52,39.121],[-77.459,39.228],[-77.721,39.322],[-77.89,39.558],[-78.184,39.695],[-78.353,39.64],[-78.468,39.517],[-78.654,39.535],[-78.78,39.622],[-78.956,39.44],[-79.096,39.473],[-79.487,39.206],[-79.476,39.721]]]]}},{"type":"Feature","id":"26","properties":{"name":"Michigan"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-84.652,45.863],[-84.358,45.771],[-84.501,45.737],[-84.652,45.863]]],[[[-85.395,45.778],[-85.395,45.778],[-85.395,45.778],[-85.395,45.778]]],[[[-85.524,45.83],[-85.524,45.83],[-85.524,45.83],[-85.524,45.83]]],[[[-85.628,45.598],[-85.567,45.76],[-85.492,45.61],[-85.628,45.598]]],[[[-85.7,45.736],[-85.7,45.736],[-85.7,45.736],[-85.7,45.736]]],[[[-85.883,45.443],[-85.883,45.443],[-85.883,45.443],[-85.883,45.443]]],[[[-86.066,45.14],[-86.066,45.14],[-86.066,45.14],[-86.066,45.14]]],[[[-86.156,45.01],[-86.156,45.01],[-86.156,45.01],[-86.156,45.01]]],[[[-86.691,45.617],[-86.691,45.617],[-86.691,45.617],[-86.691,45.617]]],[[[-86.824,41.761],[-86.619,41.894],[-86.364,42.243],[-86.26,42.443],[-86.206,42.719],[-86.231,43.016],[-86.396,43.316],[-86.54,43.659],[-86.436,43.79],[-86.515,44.048],[-86.267,44.345],[-86.221,44.567],[-86.256,44.692],[-86.088,44.741],[-86.073,44.885],[-85.933,44.969],[-85.808,44.95],[-85.618,45.186],[-85.567,45.044],[-85.653,44.849],[-85.6,44.766],[-85.474,44.991],[-85.528,44.748],[-85.395,44.931],[-85.37,45.271],[-85.144,45.37],[-84.918,45.393],[-85.09,45.477],[-85.119,45.575],[-84.943,45.71],[-85.015,45.76],[-84.774,45.79],[-84.462,45.652],[-84.214,45.635],[-84.056,45.49],[-83.909,45.485],[-83.6,45.352],[-83.496,45.357],[-83.27,45.023],[-83.399,45.07],[-83.439,44.941],[-83.32,44.881],[-83.274,44.714],[-83.331,44.34],[-83.539,44.248],[-83.582,44.057],[-83.83,43.989],[-83.956,43.751],[-83.909,43.673],[-83.683,43.59],[-83.263,43.973],[-82.915,44.071],[-82.739,43.99],[-82.642,43.852],[-82.538,43.437],[-82.524,43.225],[-82.423,43.008],[-82.524,42.608],[-82.685,42.518],[-82.624,42.665],[-82.821,42.626],[-82.897,42.385],[-83.066,42.318],[-83.191,42.006],[-83.442,41.809],[-83.453,41.733],[-84.806,41.696],[-84.806,41.761],[-86.824,41.761]]],[[[-89.253,47.876],[-89.178,47.935],[-88.658,48.139],[-88.424,48.191],[-88.668,48.011],[-89.002,47.909],[-89.124,47.829],[-89.253,47.876]]],[[[-90.416,46.566],[-90.029,46.674],[-89.792,46.819],[-89.437,46.839],[-89.142,46.984],[-88.959,47.009],[-88.905,47.086],[-88.575,47.246],[-88.388,47.385],[-88.18,47.458],[-87.8,47.473],[-87.714,47.401],[-87.94,47.347],[-88.231,47.199],[-88.442,46.972],[-88.457,46.759],[-88.245,46.929],[-87.818,46.891],[-87.674,46.837],[-87.391,46.525],[-87.258,46.488],[-86.978,46.527],[-86.928,46.465],[-86.698,46.439],[-86.709,46.544],[-86.587,46.463],[-86.138,46.673],[-85.481,46.68],[-85.259,46.753],[-84.95,46.77],[-85.029,46.698],[-85.025,46.483],[-84.799,46.446],[-84.63,46.485],[-84.595,46.415],[-84.225,46.534],[-84.146,46.418],[-84.074,46.097],[-83.873,45.993],[-83.823,46.104],[-83.582,46.089],[-83.475,45.985],[-83.561,45.912],[-84.114,45.979],[-84.376,45.932],[-84.656,46.052],[-84.831,45.872],[-85.015,46.011],[-85.316,46.087],[-85.513,46.094],[-85.664,45.967],[-85.915,45.919],[-86.195,45.963],[-86.325,45.906],[-86.364,45.79],[-86.63,45.659],[-86.719,45.668],[-86.529,45.853],[-86.784,45.855],[-86.838,45.723],[-86.946,45.696],[-87.017,45.838],[-87.06,45.709],[-87.172,45.662],[-87.326,45.425],[-87.613,45.124],[-87.592,45.095],[-87.742,45.197],[-87.649,45.339],[-87.85,45.341],[-87.85,45.341],[-87.782,45.674],[-87.879,45.755],[-88.137,45.819],[-88.101,45.922],[-88.507,46.018],[-88.783,46.016],[-89.092,46.138],[-90.122,46.337],[-90.219,46.503],[-90.352,46.538],[-90.352,46.538],[-90.416,46.566]]]]}},{"type":"Feature","id":"33","properties":{"name":"New Hampshire"},"geometry":{"type":"Polygon","coordinates":[[[-71.501,45.014],[-71.379,45.244],[-71.285,45.302],[-71.131,45.246],[-71.084,45.306],[-71.031,44.656],[-70.973,43.571],[-70.988,43.38],[-70.808,43.224],[-70.83,43.129],[-70.704,43.059],[-70.819,42.872],[-71.031,42.859],[-71.293,42.697],[-72.459,42.727],[-72.556,42.852],[-72.445,43.01],[-72.438,43.258],[-72.38,43.574],[-72.204,43.771],[-72.032,44.091],[-72.032,44.321],[-71.813,44.355],[-71.576,44.503],[-71.551,44.627],[-71.626,44.747],[-71.494,44.912],[-71.501,45.014]]]}},{"type":"Feature","id":"36","properties":{"name":"New York"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-72.036,41.255],[-72.036,41.255],[-72.036,41.255],[-72.036,41.255]]],[[[-72.143,41.098],[-72.143,41.098],[-72.143,41.098],[-72.143,41.098]]],[[[-72.215,41.183],[-72.215,41.183],[-72.215,41.183],[-72.215,41.183]]],[[[-74.071,40.661],[-74.053,40.603],[-74.261,40.502],[-74.204,40.631],[-74.071,40.661]]],[[[-76.375,43.875],[-76.375,43.875],[-76.375,43.875],[-76.375,43.875]]],[[[-76.454,43.891],[-76.454,43.891],[-76.454,43.891],[-76.454,43.891]]],[[[-79.763,42.27],[-79.15,42.553],[-79.049,42.689],[-78.852,42.784],[-78.931,42.955],[-79.013,42.986],[-79.071,43.262],[-78.489,43.375],[-78.105,43.376],[-77.714,43.323],[-77.534,43.235],[-77.391,43.277],[-76.953,43.271],[-76.698,43.345],[-76.418,43.522],[-76.235,43.529],[-76.228,43.804],[-76.138,43.935],[-76.375,44.032],[-76.314,44.199],[-75.912,44.368],[-75.765,44.516],[-75.309,44.837],[-74.828,45.016],[-74.146,44.991],[-73.342,45.011],[-73.331,44.789],[-73.389,44.636],[-73.292,44.441],[-73.31,44.274],[-73.439,44.045],[-73.349,43.772],[-73.432,43.59],[-73.249,43.554],[-73.292,42.802],[-73.263,42.746],[-73.507,42.086],[-73.486,42.05],[-73.55,41.296],[-73.482,41.212],[-73.726,41.101],[-73.658,40.985],[-73.715,40.87],[-73.486,40.946],[-73.231,40.905],[-73.141,40.966],[-72.635,40.982],[-72.355,41.14],[-72.104,40.992],[-72.395,40.866],[-73.209,40.631],[-73.557,40.582],[-73.776,40.59],[-73.942,40.543],[-74.046,40.69],[-73.906,40.998],[-74.695,41.358],[-74.896,41.44],[-75.076,41.606],[-75.112,41.84],[-75.262,41.866],[-75.359,41.999],[-76.748,42.002],[-79.76,41.998],[-79.763,42.27]]]]}},{"type":"Feature","id":"39","properties":{"name":"Ohio"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-82.735,41.603],[-82.735,41.603],[-82.735,41.603],[-82.735,41.603]]],[[[-82.843,41.647],[-82.843,41.647],[-82.843,41.647],[-82.843,41.647]]],[[[-84.806,41.696],[-83.453,41.733],[-83.066,41.596],[-82.933,41.514],[-82.836,41.588],[-82.617,41.428],[-82.48,41.382],[-82.01,41.516],[-81.737,41.488],[-81.443,41.673],[-81.009,41.854],[-80.521,41.978],[-80.521,40.639],[-80.668,40.573],[-80.6,40.321],[-80.74,40.076],[-80.829,39.714],[-81.21,39.393],[-81.386,39.343],[-81.468,39.404],[-81.569,39.268],[-81.755,39.181],[-81.766,39.02],[-81.888,38.874],[-82.028,39.029],[-82.218,38.796],[-82.172,38.619],[-82.294,38.575],[-82.323,38.449],[-82.595,38.422],[-82.725,38.558],[-82.847,38.595],[-82.893,38.756],[-83.155,38.621],[-83.31,38.601],[-83.521,38.703],[-83.665,38.628],[-83.848,38.747],[-84.214,38.805],[-84.325,39.028],[-84.444,39.115],[-84.602,39.074],[-84.821,39.105],[-84.803,40.303],[-84.806,41.696]]]]}},{"type":"Feature","id":"51","properties":{"name":"Virginia"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-75.998,37.848],[-75.998,37.848],[-75.998,37.848],[-75.998,37.848]]],[[[-75.668,37.951],[-75.625,37.994],[-75.241,38.027],[-75.352,37.875],[-75.453,37.864],[-75.564,37.737],[-75.657,37.451],[-75.833,37.173],[-75.955,37.12],[-76.027,37.257],[-75.926,37.6],[-75.668,37.951]]],[[[-75.995,37.953],[-76.045,37.953],[-75.995,37.953],[-75.995,37.953]]],[[[-81.967,37.537],[-81.928,37.359],[-81.676,37.202],[-81.554,37.208],[-81.361,37.338],[-81.224,37.235],[-80.919,37.306],[-80.858,37.427],[-80.768,37.372],[-80.51,37.482],[-80.474,37.423],[-80.298,37.508],[-80.219,37.628],[-80.295,37.692],[-80.183,37.853],[-80.011,37.986],[-79.921,38.18],[-79.688,38.432],[-79.649,38.591],[-79.476,38.457],[-79.311,38.412],[-79.211,38.493],[-78.995,38.85],[-78.87,38.763],[-78.403,39.167],[-78.346,39.466],[-77.829,39.133],[-77.721,39.322],[-77.459,39.228],[-77.52,39.121],[-77.247,39.027],[-77.118,38.934],[-77.039,38.792],[-77.129,38.635],[-77.312,38.494],[-77.265,38.333],[-77.01,38.375],[-76.964,38.214],[-76.616,38.148],[-76.515,38.026],[-76.235,37.889],[-76.361,37.61],[-76.246,37.387],[-76.275,37.31],[-76.415,37.403],[-76.393,37.226],[-76.271,37.085],[-76.429,36.97],[-76.619,37.119],[-76.651,37.221],[-76.759,37.192],[-76.655,37.039],[-76.483,36.897],[-76.318,36.885],[-76.328,36.959],[-75.995,36.922],[-75.865,36.55],[-76.917,36.543],[-80.295,36.544],[-81.676,36.588],[-83.676,36.601],[-83.137,36.743],[-83.073,36.854],[-82.879,36.889],[-82.725,37.116],[-82.355,37.265],[-81.967,37.537]]]]}},{"type":"Feature","id":"50","properties":{"name":"Vermont"},"geometry":{"type":"Polygon","coordinates":[[[-73.342,45.011],[-72.308,45.003],[-71.501,45.014],[-71.494,44.912],[-71.626,44.747],[-71.551,44.627],[-71.576,44.503],[-71.813,44.355],[-72.032,44.321],[-72.032,44.091],[-72.204,43.771],[-72.38,43.574],[-72.438,43.258],[-72.445,43.01],[-72.556,42.852],[-72.459,42.727],[-73.263,42.746],[-73.292,42.802],[-73.249,43.554],[-73.432,43.59],[-73.349,43.772],[-73.439,44.045],[-73.31,44.274],[-73.292,44.441],[-73.389,44.636],[-73.331,44.789],[-73.342,45.011]]]}},{"type":"Feature","id":"44","properties":{"name":"Rhode Island"},"geometry":{"type":"MultiPolygon","coordinates":[[[[-71.196,41.675],[-71.12,41.498],[-71.343,41.496],[-71.196,41.675]]],[[[-71.364,41.661],[-71.364,41.661],[-71.364,41.661],[-71.364,41.661]]],[[[-71.4,41.461],[-71.4,41.461],[-71.4,41.461],[-71.4,41.461]]],[[[-71.612,41.16],[-71.612,41.16],[-71.612,41.16],[-71.612,41.16]]],[[[-71.86,41.32],[-71.799,41.417],[-71.799,42.008],[-71.382,42.019],[-71.329,41.78],[-71.224,41.711],[-71.39,41.784],[-71.483,41.371],[-71.86,41.32]]]]}}]};
+const P={
+ windsor:{n:"Windsor, CT",c:[-72.644,41.852]},
+ simsbury:{n:"Simsbury, CT",c:[-72.801,41.876]},
+ salmonbrook:{n:"Salmon Brook & Hop Brook lands (now Granby), CT",c:[-72.789,41.954]},
+ waterbury:{n:"Waterbury, CT",c:[-73.051,41.558]},
+ amenia:{n:"Amenia, NY",c:[-73.556,41.846]},
+ orwell:{n:"Orwell Twp., PA",c:[-76.277,41.862]},
+ wyalusing:{n:"Wyalusing, PA",c:[-76.262,41.668]},
+ pike:{n:"Pike Twp. (set off from Orwell 1813), PA",c:[-76.20,41.80]},
+ auburn:{n:"Auburn Twp., Susquehanna Co., PA",c:[-76.03,41.72]},
+ forkston:{n:"Forkston, Wyoming Co., PA",c:[-76.13,41.535]},
+ burlington:{n:"Burlington Twp., Bradford Co., PA",c:[-76.60,41.78]},
+ ntowanda:{n:"North Towanda, PA",c:[-76.47,41.80]},
+ towanda:{n:"Towanda, PA",c:[-76.443,41.767]},
+ athens:{n:"Athens, OH",c:[-82.101,39.329]},
+ troy:{n:"Troy, Bradford Co., PA",c:[-76.787,41.786]},
+ barbourville:{n:"Barbourville, KY (Union College)",c:[-83.889,36.866]},
+ boston:{n:"Boston, MA",c:[-71.06,42.36]},
+ lyons:{n:"Lyons, Wayne Co., NY",c:[-76.99,43.064]},
+ morrisville:{n:"Morrisville, Madison Co., NY",c:[-75.64,42.899]},
+ hazard:{n:"Hazard, KY",c:[-83.193,37.25]},
+ roanoke:{n:"Roanoke, VA",c:[-79.94,37.27]},
+ wellsburg:{n:"Wellsburg & Lowman, Chemung Co., NY",c:[-76.73,42.01]},
+ portwilliam:{n:"Port William, OH",c:[-83.79,39.55]},
+ braintree:{n:"Braintree, MA",c:[-71.0,42.207]},
+ wilmington:{n:"Wilmington, OH (Wilmington College)",c:[-83.828,39.445]},
+ columbus:{n:"Columbus, OH",c:[-82.998,39.961]},
+ concord:{n:"Concord, Middlesex Co., MA",c:[-71.349,42.460]}
+};
+const G=[
+ {n:"John Slaughter (Slater)",d:"c.1640–1713",conf:"d",ev:[
+   ["1656–1669","concord","UNCONFIRMED LEAD: a John Slater, 'Sonne [of] John Slater of Surrey Feltmaker', was 'brought over as an apprentice' and in March 1655/6 Dep. Gov. Bellingham ordered the Concord constable to bring him to court because he had been 'sold from one to another'. The same man appears at Concord 1663/4–1667 (as 'Jno. Slaughter' once) and is last seen in Middlesex records in early 1669. In March 1663/4 he testified aged 'abt 24', and Concord's commissioners found he had written and posted libellous verses on the meetinghouse (he confessed). A matching baptism exists in England: 'John y[e] sonn of John Slator ffeltmaker', 15 Dec 1639, St Olave, Southwark, Surrey (LMA P71/OLA/010). Name, father's trade, county and age all agree, but no record yet proves the Southwark child, the Concord apprentice and the Windsor John are one man",1],
+   ["1669","windsor","Married Abiah (Gillett) Bartlett, widow, 15 July — recorded as John Slaughter"],
+   ["1670","simsbury","Bond of 19 January: one of four men bound to bring their families to Simsbury by 1 May 1671"],
+   ["1674","simsbury","Proposed as a freeman (as John Slaughter) in May; granted land. Town clerk and land surveyor c.1670–1713; six children born 1670–1682"],
+   ["1687","simsbury","Father-in-law Nathan Gillett of Windsor deeds him meadow land, calling him his son"],
+   ["1701","simsbury","Hired as the town's first schoolmaster, to teach reading, writing and arithmetic"],
+   ["1712","salmonbrook","Will (signed with his mark) divides land at Salmon Brook, Hop Brook, Raven Swamp and \"Slater's Swamp\""],
+   ["1713","simsbury","Died 13 May; estate about £128; will names wife Abiah, sons John, Samuel, Elias, daughter Elizabeth"]]},
+ {n:"Deacon John Slater",d:"1670–1717",conf:"d",ev:[
+   ["1670","simsbury","Born 21 February 1669/70"],
+   ["1717","simsbury","Will of 25 April leaves half his Simsbury land to son John; died 2 May. Inventory shows carpenter's and joiner's tools"]]},
+ {n:"John Slater",d:"1708–1778",conf:"d",ev:[
+   ["1708","simsbury","Born at Simsbury"],
+   ["c.1728","simsbury","Married Abigail Case"],
+   ["1759","simsbury","Married Sarah (Pengilley) Poisson, 25 January"],
+   ["1778","simsbury","Died before 7 April; widow Sarah appointed administratrix of his estate"]]},
+ {n:"John Slater Jr.",d:"1730–after 1790",conf:"d",ev:[
+   ["1730","simsbury","Born 17 September"],
+   ["1750","waterbury","Married Martha Barnes, 19 April"],
+   ["c.1769","simsbury","Married Mary (Martha) Buttolph"],
+   ["1774","simsbury","Son Roswell christened at Benoni Buttolph's Hopmeadow home"],
+   ["1790","amenia","Listed in the census at Amenia, Dutchess Co., New York"]]},
+ {n:"Roswell Slater (Slaughter)",d:"1774–c.1830",conf:"d",ev:[
+   ["1774","simsbury","Christened 24 February"],
+   ["1804","orwell","On the Orwell township tax list as Roswell Slaughter"],
+   ["1806","pike","Listed by Craft (1878) among early settlers of Pike Township: \"Roswell Slater (1806)\""],
+   ["1810","orwell","Slaughter household in Orwell census (head written as \"Joseph\")"],
+   ["1830","wyalusing","Widow Clarissa Slater heads the household; Roswell likely died c.1829–30"]]},
+ {n:"William Johnson Slater",d:"1809–1882",conf:"p",ev:[
+   ["1809","auburn","Born July, Susquehanna area of Pennsylvania (place approximate)"],
+   ["1829","auburn","Married Caroline Coates"],
+   ["1860","auburn","Family in Auburn Twp., Susquehanna Co. (son Edwin's census)"],
+   ["1864","forkston","Of Windham Twp., Wyoming Co.; buys land in Auburn Twp., which he and Caroline assign away in 1867"],
+   ["1870","forkston","Census at Forkston, Wyoming Co."],
+   ["1863","forkston","Son Roswell (b. 1832; Edwin's brother, named for his grandfather) dies 13 July serving in the 75th Illinois Infantry; buried Prophetstown, Illinois. His 1853 marriage record names his parents as Wm. J. and Caroline Slater"],
+   ["1880","burlington","Census at Burlington, Bradford Co."],
+   ["1882","ntowanda","Died 7 July; buried Pail Factory Cemetery, North Towanda"]]},
+ {n:"Edwin E. Slater",d:"1845–1931",conf:"d",ev:[
+   ["1845","auburn","Born 27 April, Pennsylvania (place approximate)"],
+   ["1860","auburn","With his parents in Auburn Twp."],
+   ["1870","forkston","Forkston, Wyoming Co.; married Alice A. Adams c.1868"],
+   ["1900","burlington","Farming in Burlington Twp. through 1930; later married Agnes Scouten"],
+   ["1931","burlington","Died 16 February, Burlington"]]},
+ {n:"Harry Grover Slater",d:"1888–1955",conf:"d",ev:[
+   ["1888","burlington","Born 1 October, Pennsylvania"],
+   ["1910","burlington","Married Mertie Helena Hemenway, 26 October, Bradford Co."],
+   ["1950","burlington","Farmer in Burlington Twp. in every census 1900–1950"],
+   ["1955","towanda","Died 2 March at Towanda; buried Bradford County Memorial Park"]]},
+ {n:"Kenneth Harry Slater",d:"1927–1987",conf:"d",ev:[
+   ["1927","burlington","Born 3 April, Pennsylvania; in his parents' household in the 1930 and 1940 censuses"],
+   ["1944","troy","Unconfirmed lead: a \"Kenneth Slater\" in the Troy High School yearbook (index entry only)",1],
+   ["1945","burlington","WWII draft registration, Pennsylvania"],
+   ["c.1948–51","barbourville","Attended Union College, Barbourville, Kentucky, where he met Helen Louise Bostic of Clearfield, Tennessee; they married in 1951 (Helen's obituary, Athens Messenger, 27 Oct 2023, calls him 'the future Reverend Kenneth Slater of Towanda, PA'). The 1950 census lists a Kenneth Slater, 23, b. Pennsylvania, WWII veteran, student at Union College. Union College yearbook Stespean 1951: 'Kenneth H. Slater, Towanda, Pennsylvania, A. B., January 1951 … Profession sought: Ministry'. Married Helen Louise Bostic 16 March 1951 (Who's Who in the Methodist Church, 1966)"],
+   ["1951–53","hazard","Pastor in Hazard, Kentucky, 1951–53 (Who's Who in the Methodist Church, 1966); associate pastor of the Bowman Memorial Methodist Church; a member on trial in the Central New York Conference (First Congregational Church of Braintree history, 1957)"],
+   ["1952–53","braintree","Assistant minister, First Congregational Church, Braintree, Massachusetts, Sept 1952 – June 1953, while a Boston University theology student; 'a native of Towanda, Pa.' (Gathered in 1707, 1957)"],
+   ["1954","boston","Graduated S.T.B. (Bachelor of Sacred Theology) from Boston University School of Theology, 1954, listed as 'Kenneth Harry Slater' (BU School of Theology graduate list); Helen was with him in Boston (family recollection)"],
+   ["1954–57","morrisville","Field work assistant at Morrisville, N.Y., 1954–57 (Who's Who in the Methodist Church, 1966); 'Rev. Kenneth Slater of Morrisville, N.Y.' in his father's 1955 obituary"],
+   ["1957–59","roanoke","Pastor in Roanoke, Virginia, 1957–59 (Who's Who in the Methodist Church, 1966); General Minutes record transfers 'K. H. Slater, Va.' 1957 and back to Central New York 22 May 1959"],
+   ["1959–61","wellsburg","Pastor at Wellsburg and Lowman, N.Y., 1959–61 (Who's Who in the Methodist Church, 1966)"],
+   ["1961–66","lyons","Pastor at Lyons, New York, from 1961 (Who's Who in the Methodist Church, 1966): listed 'Lyons — Kenneth H. Slater' in the General Minutes of the Methodist Church for 1964, 1965 and 1966 (and in 1962–63 sources)"],
+   ["1967–70","wilmington","Registrar, Wilmington College, Ohio — listed among Methodist ministers in special appointments ('Reg. Wilmington Coll.') in the General Minutes, 1967–1970"],
+   ["1968","portwilliam","'Port William United Methodist Church, Rev. Kenneth Slater, minister' (Wilmington News Journal, May 1968)"],
+   ["by 1987","athens","Lived here as director of student records at Ohio University and a Methodist minister, living in Athens. Buried Athens County Memory Gardens after services Monday 15 June (Wilmington News-Journal, 18 June 1987)"],
+   ["1987","columbus","Died Friday 12 June at St. Anthony's Hospital, Columbus (1987 obituary)"]]}
+];
+const svg=d3.select("#map"), W=800, H=560;
+const proj=d3.geoConicConformal().parallels([39,42]).rotate([78,0]);
+const path=d3.geoPath(proj);
+const gStates=svg.append("g"), gRoutes=svg.append("g"), gDots=svg.append("g"), gLbl=svg.append("g");
+const defs=svg.append("defs");
+[["d","arrowd"],["p","arrowp"]].forEach(([k,c])=>defs.append("marker").attr("id","ah"+k).attr("viewBox","0 0 10 10").attr("refX",8).attr("refY",5).attr("markerWidth",6).attr("markerHeight",6).attr("orient","auto-start-reverse").append("path").attr("d","M0,0L10,5L0,10z").attr("class",c));
+let cur=-1;
+function fit(ids){
+  const pts=ids.map(i=>P[i].c);
+  const lon=d3.extent(pts,p=>p[0]), lat=d3.extent(pts,p=>p[1]);
+  const padLon=Math.max(.9,(lon[1]-lon[0])*.25), padLat=Math.max(.6,(lat[1]-lat[0])*.25);
+  const box={type:"MultiPoint",coordinates:[[lon[0]-padLon,lat[0]-padLat],[lon[1]+padLon,lat[1]+padLat],[lon[0]-padLon,lat[1]+padLat],[lon[1]+padLon,lat[0]-padLat]]};
+  proj.fitExtent([[30,30],[W-30,H-40]],box);
+}
+function lineFor(a,b){const p1=proj(P[a].c),p2=proj(P[b].c);const dx=p2[0]-p1[0],dy=p2[1]-p1[1],dr=Math.hypot(dx,dy)*1.4;return `M${p1[0]},${p1[1]}A${dr},${dr} 0 0,1 ${p2[0]},${p2[1]}`}
+function routesOf(i){ // sequence of distinct places within gen, plus link from previous gen's last place
+  const seq=[];G[i].ev.filter(e=>!e[3]).forEach(e=>{if(seq[seq.length-1]!==e[1])seq.push(e[1])});
+  const r=[];for(let k=1;k<seq.length;k++)r.push([seq[k-1],seq[k],G[i].conf]);
+  return r;
+}
+function draw(){
+  const sel=cur;
+  const ids= sel<0 ? Object.keys(P) : [...new Set(G[sel].ev.map(e=>e[1]).concat(sel>0?[G[sel-1].ev.at(-1)[1]]:[]))];
+  fit(ids);
+  gStates.selectAll("path").data(STATES.features).join("path").attr("class","state").attr("d",path);
+  gStates.selectAll("text").data(STATES.features).join("text").attr("class","statelbl")
+    .attr("text-anchor","middle").text(d=>d.properties.name)
+    .attr("transform",d=>{const c=path.centroid(d);return `translate(${c})`})
+    .style("display",d=>{const c=path.centroid(d);return (c[0]>40&&c[0]<W-40&&c[1]>30&&c[1]<H-30&&path.area(d)>9000)?null:"none"});
+  // routes
+  let R=[];
+  G.forEach((g,i)=>{routesOf(i).forEach(r=>R.push({a:r[0],b:r[1],k:r[2],gen:i,inner:true}));
+    if(i>0){const a=G[i-1].ev.at(-1)[1], b=G[i].ev[0][1]; // parent's final place to child's first
+      if(i===5) R.push({a:"wyalusing",b:"auburn",k:"p",gen:i,inner:false});}
+  });
+  gRoutes.selectAll("path").data(R).join("path")
+    .attr("class",r=>"route "+r.k+(sel>=0&&r.gen!==sel?" faint":""))
+    .attr("d",r=>lineFor(r.a,r.b)).attr("marker-end",r=>(sel<0||r.gen===sel)?`url(#ah${r.k})`:null);
+  const active=new Set(sel<0?Object.keys(P):G[sel].ev.map(e=>e[1]));
+  const keys=Object.keys(P);
+  gDots.selectAll("circle").data(keys).join("circle").attr("class",k=>"dot"+(active.has(k)&&sel>=0?" on":""))
+    .attr("r",k=>active.has(k)&&sel>=0?6:4).attr("cx",k=>proj(P[k].c)[0]).attr("cy",k=>proj(P[k].c)[1]);
+  // labels: only for active places when a generation is selected; in whole view, a curated set
+  const showAll=["windsor","simsbury","amenia","wyalusing","burlington","athens"];
+  const L=keys.filter(k=>sel<0?showAll.includes(k):active.has(k));
+  const placed=[];
+  gLbl.selectAll("text").data(L,d=>d).join("text").attr("class","plbl").text(k=>P[k].n.replace(/, (Bradford|Susquehanna|Wyoming) Co\./,""))
+    .each(function(k){const [x,y]=proj(P[k].c);let dx=9,dy=4,anchor="start";
+      const w=this.getComputedTextLength?this.getComputedTextLength():80;
+      if(x+w+12>W){anchor="end";dx=-9}
+      let ty=y+dy;for(let t=0;t<8&&placed.some(p=>Math.abs(p[1]-ty)<13&&Math.abs(p[0]-x)<w+20);t++)ty+=14;
+      placed.push([x,ty]);d3.select(this).attr("x",x+dx).attr("y",ty).attr("text-anchor",anchor)});
+  document.getElementById("cap").textContent= sel<0?"All generations, 1669–1987":`Gen. ${sel+1}: ${G[sel].n}`;
+  document.querySelectorAll(".gen").forEach((el,i)=>{el.classList.toggle("on",i===sel);el.setAttribute("aria-expanded",i===sel)});
+  document.getElementById("all").setAttribute("aria-pressed",sel<0);
+}
+const led=document.getElementById("ledger");
+G.forEach((g,i)=>{const b=document.createElement("button");b.className="gen";b.id="gen"+i;
+  b.innerHTML=`<span class="num">${String(i+1).padStart(2,"0")}</span><span><span class="gname">${g.n}</span><span class="dates">${g.d}</span><br><span class="conf ${g.conf}">${g.conf==="d"?"Link to parent documented":"Link to parent probable"}</span></span>
+  <ul class="events">${g.ev.map(e=>`<li><span class="y">${e[0]}</span><span>${e[2]}<br><span class="pl">${P[e[1]].n}</span></span></li>`).join("")}</ul>`;
+  b.onclick=()=>{stop();cur=(cur===i?-1:i);draw()};led.appendChild(b)});
+let timer=null;
+function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById("play").textContent="Play the migration"}}
+document.getElementById("all").onclick=()=>{stop();cur=-1;draw()};
+document.getElementById("prev").onclick=()=>{stop();cur=cur<=0?0:cur-1;draw()};
+document.getElementById("next").onclick=()=>{stop();cur=Math.min(G.length-1,cur+1);draw()};
+document.getElementById("play").onclick=()=>{if(timer){stop();return}
+  cur=0;draw();document.getElementById("play").textContent="Stop";
+  timer=setInterval(()=>{if(cur>=G.length-1){stop();cur=-1;draw();return}cur++;draw()},2600)};
+draw();
+</script>
+
+</body></html>
