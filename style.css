@@ -4,7 +4,7 @@
   --accent:#a4442b; --doc:#2f5d73; --prob:#b07d1c; --tint:#e2e7e3;
   --display:"Roboto Condensed","Arial Narrow",system-ui,sans-serif;
   --body:"Cabin",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --mono:"Inconsolata",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme:dark){:root{
   --bg:#141b1f; --plate:#1a2328; --ink:#e3e9ea; --muted:#9aa9ad; --rule:#2c393e;
