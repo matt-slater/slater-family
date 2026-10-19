@@ -49,6 +49,12 @@ button[aria-pressed="true"]{background:var(--ink);color:var(--plate);border-colo
 .events li{display:grid;grid-template-columns:58px minmax(0,1fr);gap:8px;padding:3px 0}
 .events .y{font-family:var(--mono);color:var(--accent);font-size:12.5px;padding-top:1px}
 .events .pl{color:var(--muted)}
+.events .src{display:block;margin-top:3px;font-size:12.5px;line-height:1.45;color:var(--muted)}
+.events .src b{font-weight:600;color:var(--muted)}
+.events .src a{color:var(--doc)}
+.events li{padding:6px 0 !important;border-bottom:1px dashed var(--rule)}
+.gen{cursor:pointer}
+
 .note{margin-top:20px;font-size:13px;color:var(--muted);max-width:75ch}
 .note b{color:var(--ink);font-weight:600}
 .state{fill:var(--land);stroke:var(--border);stroke-width:.7}
@@ -99,7 +105,7 @@ body{margin:0}
   </div>
   <div class="ledger" id="ledger"></div>
 </div>
-<p class="note"><b>Before 1669:</b> where John Slaughter came from is unknown; he appears in no Connecticut record before his marriage, and he always wrote his own name Slater. The family-tree link to the Slaughters of Upper Slaughter, Gloucestershire, rests on unsourced and merged profiles, so England is left off this map until a record or a Y-DNA match connects them. <b>Weakest link:</b> Roswell → William Johnson Slater, supported by place, timing and naming but not yet by a record that names William as Roswell's son. Locations are plotted at the town or township, not the exact farm.</p>
+<p class="note"><b>Sources:</b> open a generation to see each event with the record it comes from; links go to the record or book where it is online. Events marked as coming from the FamilySearch Family Tree have not yet been checked against the original record. <b>Before 1669:</b> John Slater was very probably the Concord apprentice baptised in Southwark in 1639, but this is not proven, so England is left off the map (see <a href="origin.html">John's Origin</a>). <b>Weakest link:</b> Roswell → William Johnson Slater, supported by place, naming and his father's Connecticut birthplace but not by a record naming William's father (see <a href="roswell.html">Roswell → William</a>). Places are plotted at the town or township.</p>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
@@ -131,74 +137,864 @@ const P={
  braintree:{n:"Braintree, MA",c:[-71.0,42.207]},
  wilmington:{n:"Wilmington, OH (Wilmington College)",c:[-83.828,39.445]},
  columbus:{n:"Columbus, OH",c:[-82.998,39.961]},
- concord:{n:"Concord, Middlesex Co., MA",c:[-71.349,42.460]}
+ concord:{n:"Concord, Middlesex Co., MA",c:[-71.349,42.460]},
+ wysox:{n:"Wysox Twp., Bradford Co., PA",c:[-76.392,41.776]}
 };
 const G=[
- {n:"John Slaughter (Slater)",d:"c.1640–1713",conf:"d",ev:[
-   ["1656–1669","concord","UNCONFIRMED LEAD: a John Slater, 'Sonne [of] John Slater of Surrey Feltmaker', was 'brought over as an apprentice' and in March 1655/6 Dep. Gov. Bellingham ordered the Concord constable to bring him to court because he had been 'sold from one to another'. The same man appears at Concord 1663/4–1667 (as 'Jno. Slaughter' once) and is last seen in Middlesex records in early 1669. In March 1663/4 he testified aged 'abt 24', and Concord's commissioners found he had written and posted libellous verses on the meetinghouse (he confessed). A matching baptism exists in England: 'John y[e] sonn of John Slator ffeltmaker', 15 Dec 1639, St Olave, Southwark, Surrey (LMA P71/OLA/010). Name, father's trade, county and age all agree, but no record yet proves the Southwark child, the Concord apprentice and the Windsor John are one man",1],
-   ["1669","windsor","Married Abiah (Gillett) Bartlett, widow, 15 July — recorded as John Slaughter"],
-   ["1670","simsbury","Bond of 19 January: one of four men bound to bring their families to Simsbury by 1 May 1671"],
-   ["1674","simsbury","Proposed as a freeman (as John Slaughter) in May; granted land. Town clerk and land surveyor c.1670–1713; six children born 1670–1682"],
-   ["1687","simsbury","Father-in-law Nathan Gillett of Windsor deeds him meadow land, calling him his son"],
-   ["1701","simsbury","Hired as the town's first schoolmaster, to teach reading, writing and arithmetic"],
-   ["1712","salmonbrook","Will (signed with his mark) divides land at Salmon Brook, Hop Brook, Raven Swamp and \"Slater's Swamp\""],
-   ["1713","simsbury","Died 13 May; estate about £128; will names wife Abiah, sons John, Samuel, Elias, daughter Elizabeth"]]},
- {n:"Deacon John Slater",d:"1670–1717",conf:"d",ev:[
-   ["1670","simsbury","Born 21 February 1669/70"],
-   ["1717","simsbury","Will of 25 April leaves half his Simsbury land to son John; died 2 May. Inventory shows carpenter's and joiner's tools"]]},
- {n:"John Slater",d:"1708–1778",conf:"d",ev:[
-   ["1708","simsbury","Born at Simsbury"],
-   ["c.1728","simsbury","Married Abigail Case"],
-   ["1759","simsbury","Married Sarah (Pengilley) Poisson, 25 January"],
-   ["1778","simsbury","Died before 7 April; widow Sarah appointed administratrix of his estate"]]},
- {n:"John Slater Jr.",d:"1730–after 1790",conf:"d",ev:[
-   ["1730","simsbury","Born 17 September"],
-   ["1750","waterbury","Married Martha Barnes, 19 April"],
-   ["c.1769","simsbury","Married Mary (Martha) Buttolph"],
-   ["1774","simsbury","Son Roswell christened at Benoni Buttolph's Hopmeadow home"],
-   ["1790","amenia","Listed in the census at Amenia, Dutchess Co., New York"]]},
- {n:"Roswell Slater (Slaughter)",d:"1774–c.1830",conf:"d",ev:[
-   ["1774","simsbury","Christened 24 February"],
-   ["1804","orwell","On the Orwell township tax list as Roswell Slaughter"],
-   ["1806","pike","Listed by Craft (1878) among early settlers of Pike Township: \"Roswell Slater (1806)\""],
-   ["1810","orwell","Slaughter household in Orwell census (head written as \"Joseph\")"],
-   ["1830","wyalusing","Widow Clarissa Slater heads the household; Roswell likely died c.1829–30"]]},
- {n:"William Johnson Slater",d:"1809–1882",conf:"p",ev:[
-   ["1809","auburn","Born July, Susquehanna area of Pennsylvania (place approximate)"],
-   ["1829","auburn","Married Caroline Coates"],
-   ["1860","auburn","Family in Auburn Twp., Susquehanna Co. (son Edwin's census)"],
-   ["1864","forkston","Of Windham Twp., Wyoming Co.; buys land in Auburn Twp., which he and Caroline assign away in 1867"],
-   ["1870","forkston","Census at Forkston, Wyoming Co."],
-   ["1863","forkston","Son Roswell (b. 1832; Edwin's brother, named for his grandfather) dies 13 July serving in the 75th Illinois Infantry; buried Prophetstown, Illinois. His 1853 marriage record names his parents as Wm. J. and Caroline Slater"],
-   ["1880","burlington","Census at Burlington, Bradford Co."],
-   ["1882","ntowanda","Died 7 July; buried Pail Factory Cemetery, North Towanda"]]},
- {n:"Edwin E. Slater",d:"1845–1931",conf:"d",ev:[
-   ["1845","auburn","Born 27 April, Pennsylvania (place approximate)"],
-   ["1860","auburn","With his parents in Auburn Twp."],
-   ["1870","forkston","Forkston, Wyoming Co.; married Alice A. Adams c.1868"],
-   ["1900","burlington","Farming in Burlington Twp. through 1930; later married Agnes Scouten"],
-   ["1931","burlington","Died 16 February, Burlington"]]},
- {n:"Harry Grover Slater",d:"1888–1955",conf:"d",ev:[
-   ["1888","burlington","Born 1 October, Pennsylvania"],
-   ["1910","burlington","Married Mertie Helena Hemenway, 26 October, Bradford Co."],
-   ["1950","burlington","Farmer in Burlington Twp. in every census 1900–1950"],
-   ["1955","towanda","Died 2 March at Towanda; buried Bradford County Memorial Park"]]},
- {n:"Kenneth Harry Slater",d:"1927–1987",conf:"d",ev:[
-   ["1927","burlington","Born 3 April, Pennsylvania; in his parents' household in the 1930 and 1940 censuses"],
-   ["1944","troy","Unconfirmed lead: a \"Kenneth Slater\" in the Troy High School yearbook (index entry only)",1],
-   ["1945","burlington","WWII draft registration, Pennsylvania"],
-   ["c.1948–51","barbourville","Attended Union College, Barbourville, Kentucky, where he met Helen Louise Bostic of Clearfield, Tennessee; they married in 1951 (Helen's obituary, Athens Messenger, 27 Oct 2023, calls him 'the future Reverend Kenneth Slater of Towanda, PA'). The 1950 census lists a Kenneth Slater, 23, b. Pennsylvania, WWII veteran, student at Union College. Union College yearbook Stespean 1951: 'Kenneth H. Slater, Towanda, Pennsylvania, A. B., January 1951 … Profession sought: Ministry'. Married Helen Louise Bostic 16 March 1951 (Who's Who in the Methodist Church, 1966)"],
-   ["1951–53","hazard","Pastor in Hazard, Kentucky, 1951–53 (Who's Who in the Methodist Church, 1966); associate pastor of the Bowman Memorial Methodist Church; a member on trial in the Central New York Conference (First Congregational Church of Braintree history, 1957)"],
-   ["1952–53","braintree","Assistant minister, First Congregational Church, Braintree, Massachusetts, Sept 1952 – June 1953, while a Boston University theology student; 'a native of Towanda, Pa.' (Gathered in 1707, 1957)"],
-   ["1954","boston","Graduated S.T.B. (Bachelor of Sacred Theology) from Boston University School of Theology, 1954, listed as 'Kenneth Harry Slater' (BU School of Theology graduate list); Helen was with him in Boston (family recollection)"],
-   ["1954–57","morrisville","Field work assistant at Morrisville, N.Y., 1954–57 (Who's Who in the Methodist Church, 1966); 'Rev. Kenneth Slater of Morrisville, N.Y.' in his father's 1955 obituary"],
-   ["1957–59","roanoke","Pastor in Roanoke, Virginia, 1957–59 (Who's Who in the Methodist Church, 1966); General Minutes record transfers 'K. H. Slater, Va.' 1957 and back to Central New York 22 May 1959"],
-   ["1959–61","wellsburg","Pastor at Wellsburg and Lowman, N.Y., 1959–61 (Who's Who in the Methodist Church, 1966)"],
-   ["1961–66","lyons","Pastor at Lyons, New York, from 1961 (Who's Who in the Methodist Church, 1966): listed 'Lyons — Kenneth H. Slater' in the General Minutes of the Methodist Church for 1964, 1965 and 1966 (and in 1962–63 sources)"],
-   ["1967–70","wilmington","Registrar, Wilmington College, Ohio — listed among Methodist ministers in special appointments ('Reg. Wilmington Coll.') in the General Minutes, 1967–1970"],
-   ["1968","portwilliam","'Port William United Methodist Church, Rev. Kenneth Slater, minister' (Wilmington News Journal, May 1968)"],
-   ["by 1987","athens","Lived here as director of student records at Ohio University and a Methodist minister, living in Athens. Buried Athens County Memory Gardens after services Monday 15 June (Wilmington News-Journal, 18 June 1987)"],
-   ["1987","columbus","Died Friday 12 June at St. Anthony's Hospital, Columbus (1987 obituary)"]]}
+{
+"n": "John Slaughter (Slater)",
+"d": "c.1640–1713",
+"conf": "d",
+"ev": [
+[
+"1656–1669",
+"concord",
+"UNCONFIRMED LEAD: a John Slater, 'Sonne [of] John Slater of Surrey Feltmaker', was 'brought over as an apprentice' and in March 1655/6 Dep. Gov. Bellingham ordered the Concord constable to bring him to court because he had been 'sold from one to another'. The same man appears at Concord 1663/4–1667 (as 'Jno. Slaughter' once) and is last seen in Middlesex records in early 1669. In March 1663/4 he testified aged 'abt 24', and Concord's commissioners found he had written and posted libellous verses on the meetinghouse (he confessed). A matching baptism exists in England: 'John y[e] sonn of John Slator ffeltmaker', 15 Dec 1639, St Olave, Southwark, Surrey (LMA P71/OLA/010). Name, father's trade, county and age all agree, but no record yet proves the Southwark child, the Concord apprentice and the Windsor John are one man",
+1,
+[
+{
+"s": "Bellingham warrant, 23 Mar 1655/6: Middlesex Co. court papers, film 007831263, image 499",
+"u": "https://www.familysearch.org/ark:/61903/3:1:3Q9M-CS3Q-CHSP-P"
+},
+{
+"s": "Wyman, Abstracts of Middlesex Court Files vol. 1 p. 79; vol. 2 pp. 5, 9, 10, 91 (AmericanAncestors)"
+},
+{
+"s": "Full case",
+"u": "origin.html"
+}
+]
+],
+[
+"1669",
+"windsor",
+"Married Abiah (Gillett) Bartlett, widow, 15 July — recorded as John Slaughter",
+0,
+[
+{
+"s": "Windsor marriages, film 007730421, image 55, p. 61",
+"u": "https://www.familysearch.org/ark:/61903/3:1:3Q9M-C9BT-8ZZJ"
+},
+{
+"s": "Stiles, History of Ancient Windsor (1891) vol. 2 p. 692"
+}
+]
+],
+[
+"1670",
+"simsbury",
+"Bond of 19 January: one of four men bound to bring their families to Simsbury by 1 May 1671",
+0,
+[
+{
+"s": "Barber, A Record and Documentary History of Simsbury (1931) p. 44"
+}
+]
+],
+[
+"1674",
+"simsbury",
+"Proposed as a freeman (as John Slaughter) in May; granted land. Town clerk and land surveyor c.1670–1713; six children born 1670–1682",
+0,
+[
+{
+"s": "Public Records of the Colony of Connecticut vol. 2 (freemen, May 1674)"
+},
+{
+"s": "Barber (1931) pp. 42, 216"
+},
+{
+"s": "Simsbury town records 1670–1713, film 007896790"
+}
+]
+],
+[
+"1687",
+"simsbury",
+"Father-in-law Nathan Gillett of Windsor deeds him meadow land, calling him his son",
+0,
+[
+{
+"s": "Simsbury land records vols. 1–2 (FamilySearch DGS 8200143)"
+}
+]
+],
+[
+"1701",
+"simsbury",
+"Hired as the town's first schoolmaster, to teach reading, writing and arithmetic",
+0,
+[
+{
+"s": "Barber (1931); Phelps, History of Simsbury (1845)"
+}
+]
+],
+[
+"1712",
+"salmonbrook",
+"Will (signed with his mark) divides land at Salmon Brook, Hop Brook, Raven Swamp and \"Slater's Swamp\"",
+0,
+[
+{
+"s": "Manwaring, Digest of Early Connecticut Probate Records vol. 2 (1904) p. 296",
+"u": "https://archive.org/details/digestofearlycon02manw"
+}
+]
+],
+[
+"1713",
+"simsbury",
+"Died 13 May; estate about £128; will names wife Abiah, sons John, Samuel, Elias, daughter Elizabeth",
+0,
+[
+{
+"s": "Simsbury vital records p. 19; town records, film 007939116, image 20 (p. 31)"
+},
+{
+"s": "Manwaring vol. 2 p. 296 (inventory 13 May 1713)",
+"u": "https://archive.org/details/digestofearlycon02manw"
+}
+]
+]
+]
+},
+{
+"n": "Deacon John Slater",
+"d": "1670–1717",
+"conf": "d",
+"ev": [
+[
+"1670",
+"simsbury",
+"Born 21 February 1669/70",
+0,
+[
+{
+"s": "'The Case Family', The American Genealogist vol. 34 (1958) pp. 67–69",
+"u": "https://archive.org/details/sim_american-genealogist_1958-04_34_2"
+}
+]
+],
+[
+"1717",
+"simsbury",
+"Will of 25 April leaves half his Simsbury land to son John; died 2 May. Inventory shows carpenter's and joiner's tools",
+0,
+[
+{
+"s": "Manwaring vol. 2 (Hartford probate, will of 25 Apr 1717)",
+"u": "https://archive.org/details/digestofearlycon02manw"
+},
+{
+"s": "FamilySearch Family Tree MXKC-T95",
+"u": "https://www.familysearch.org/tree/person/details/MXKC-T95"
+}
+]
+]
+]
+},
+{
+"n": "John Slater",
+"d": "1708–1778",
+"conf": "d",
+"ev": [
+[
+"1708",
+"simsbury",
+"Born at Simsbury",
+0,
+[
+{
+"s": "FamilySearch Family Tree L5YV-RR5 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L5YV-RR5"
+}
+]
+],
+[
+"c.1728",
+"simsbury",
+"Married Abigail Case",
+0,
+[
+{
+"s": "FamilySearch Family Tree L5YV-RR5 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L5YV-RR5"
+}
+]
+],
+[
+"1759",
+"simsbury",
+"Married Sarah (Pengilley) Poisson, 25 January",
+0,
+[
+{
+"s": "FamilySearch Family Tree L5YV-RR5 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L5YV-RR5"
+}
+]
+],
+[
+"1778",
+"simsbury",
+"Died before 7 April; widow Sarah appointed administratrix of his estate",
+0,
+[
+{
+"s": "FamilySearch Family Tree L5YV-RR5 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L5YV-RR5"
+}
+]
+]
+]
+},
+{
+"n": "John Slater Jr.",
+"d": "1730–after 1790",
+"conf": "d",
+"ev": [
+[
+"1730",
+"simsbury",
+"Born 17 September",
+0,
+[
+{
+"s": "FamilySearch Family Tree M2FY-Z25 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/M2FY-Z25"
+}
+]
+],
+[
+"1750",
+"waterbury",
+"Married Martha Barnes, 19 April",
+0,
+[
+{
+"s": "FamilySearch Family Tree M2FY-Z25 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/M2FY-Z25"
+}
+]
+],
+[
+"c.1769",
+"simsbury",
+"Married Mary (Martha) Buttolph",
+0,
+[
+{
+"s": "FamilySearch Family Tree M2FY-Z25 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/M2FY-Z25"
+}
+]
+],
+[
+"1774",
+"simsbury",
+"Son Roswell christened at Benoni Buttolph's Hopmeadow home",
+0,
+[
+{
+"s": "The American Genealogist vol. 58, as cited in notes on FamilySearch profile M7XH-VTY",
+"u": "https://www.familysearch.org/tree/person/details/M7XH-VTY"
+}
+]
+],
+[
+"1790",
+"amenia",
+"Listed in the census at Amenia, Dutchess Co., New York",
+0,
+[
+{
+"s": "FamilySearch Family Tree M2FY-Z25 and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/M2FY-Z25"
+}
+]
+]
+]
+},
+{
+"n": "Roswell Slater (Slaughter)",
+"d": "1774–c.1830",
+"conf": "d",
+"ev": [
+[
+"1774",
+"simsbury",
+"Christened 24 February",
+0,
+[
+{
+"s": "The American Genealogist vol. 58, as cited on FamilySearch profile M7XH-VTY (original not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/M7XH-VTY"
+}
+]
+],
+[
+"1795",
+"amenia",
+"Witnesses a deed of 4 February from John Slater of Amenia to John Slater Jr., conveying rights to Simsbury land",
+0,
+[
+{
+"s": "Simsbury land records vols. 17–18 pp. 512–513, FamilySearch DGS 008299125, image 504"
+}
+]
+],
+[
+"1804",
+"orwell",
+"On the Orwell township tax list as Roswell Slaughter",
+0,
+[
+{
+"s": "Annual, Bradford County Historical Society (1906), Orwell taxables 1804",
+"u": "https://archive.org/details/annualbradfordco00brad"
+}
+]
+],
+[
+"1806",
+"pike",
+"Listed by Craft (1878) among early settlers of Pike Township: \"Roswell Slater (1806)\"",
+0,
+[
+{
+"s": "Craft, History of Bradford County (1878), Pike Township",
+"u": "https://archive.org/details/historyofbradfor00craf"
+}
+]
+],
+[
+"1810",
+"orwell",
+"Slaughter household in Orwell census (head written as \"Joseph\")",
+0,
+[
+{
+"s": "1810 U.S. census, Orwell, Luzerne Co., p. 716A",
+"u": "https://www.familysearch.org/ark:/61903/1:1:XH2B-29N"
+}
+]
+],
+[
+"1830",
+"wyalusing",
+"Widow Clarissa Slater heads the household; Roswell likely died c.1829–30",
+0,
+[
+{
+"s": "1830 U.S. census, Wyalusing, p. 63 (indexed \"Caring Slater\")",
+"u": "https://www.familysearch.org/ark:/61903/1:1:XHPR-3G9"
+},
+{
+"s": "Samantha Shumway's 1894 marriage license no. 2474 names her parents Roswell and Clarissa Slater",
+"u": "https://www.familysearch.org/ark:/61903/3:1:33SQ-GGBM-8VY"
+}
+]
+]
+]
+},
+{
+"n": "William Johnson Slater",
+"d": "c.1806–1882",
+"conf": "p",
+"ev": [
+[
+"c.1806–09",
+"pike",
+"Born in Pennsylvania (aged 44 in 1850, 73 in 1880; family trees give July 1809). Birthplace not recorded",
+0,
+[
+{
+"s": "1850 census, Auburn",
+"u": "https://www.familysearch.org/ark:/61903/3:1:S3HT-6QLW-ZDV"
+},
+{
+"s": "1880 census, Burlington",
+"u": "https://www.familysearch.org/ark:/61903/3:1:33S7-9YBK-9FC8"
+}
+]
+],
+[
+"c.1829",
+"pike",
+"Married Caroline (Coates), born Massachusetts c.1808–09. Marriage record not yet found",
+0,
+[
+{
+"s": "FamilySearch Family Tree L4TW-F6Z (date not verified)",
+"u": "https://www.familysearch.org/tree/person/details/L4TW-F6Z"
+},
+{
+"s": "Son Roswell's 1853 marriage names his parents Wm. J. and Caroline Slater"
+}
+]
+],
+[
+"1830",
+"pike",
+"Census: a newly married couple in Pike Twp. — where Roswell had settled — next door to Benjamin Coats",
+0,
+[
+{
+"s": "1830 U.S. census, Pike Twp., p. 94 (indexed \"William J Stater\")",
+"u": "https://www.familysearch.org/ark:/61903/3:1:33SQ-GYBQ-H5"
+}
+]
+],
+[
+"1840",
+"wysox",
+"Census: household with one son and three daughters in Wysox Twp.",
+0,
+[
+{
+"s": "1840 U.S. census, Wysox Twp. (index misplaces it in Ohio)",
+"u": "https://www.familysearch.org/ark:/61903/3:1:33SQ-GYB9-SGHP"
+}
+]
+],
+[
+"1850",
+"auburn",
+"Census: farmer, aged 44, with Caroline and children Naomi, Roswell, Fanny, Rachel, Benjamin, Edwin and an infant",
+0,
+[
+{
+"s": "1850 U.S. census, Auburn Twp., Susquehanna Co., dwelling 924",
+"u": "https://www.familysearch.org/ark:/61903/3:1:S3HT-6QLW-ZDV"
+}
+]
+],
+[
+"1860",
+"auburn",
+"Census: still in Auburn Twp. with Caroline and sons Benjamin and Edwin",
+0,
+[
+{
+"s": "1860 U.S. census index, Auburn",
+"u": "https://www.familysearch.org/ark:/61903/1:2:MHT8-H17"
+}
+]
+],
+[
+"1863",
+"forkston",
+"Son Roswell (b. 1832; Edwin's brother, named for his grandfather) dies 13 July serving in the 75th Illinois Infantry; buried Prophetstown, Illinois. His 1853 marriage record names his parents as Wm. J. and Caroline Slater",
+0,
+[
+{
+"s": "Pennsylvania county marriages, 21 May 1853, Auburn Twp."
+},
+{
+"s": "Biographical Record of Whiteside County, Illinois, p. 25",
+"u": "https://archive.org/details/biographicalreco02clar"
+},
+{
+"s": "Civil War widow's pension index, cert. 20,502"
+}
+]
+],
+[
+"1864–67",
+"auburn",
+"Of Windham Twp., Wyoming Co.: buys 10 acres in Auburn Twp. from Nelson H. Roberts (1864); he and Caroline assign it to George Warner (1867)",
+0,
+[
+{
+"s": "Susquehanna Co. deeds 42/291 and 42/292 (grantor/grantee indexes)"
+}
+]
+],
+[
+"1867–79",
+"forkston",
+"Buys land in Forkston from Asher Kasson (1867); with Caroline sells to Forkston Township (1869) and Joseph H. Rogers (1879). Adolphus D. Slater also owns land in Forkston",
+0,
+[
+{
+"s": "Wyoming Co. deed indexes p. 709, books 13, 15, 16, 23"
+}
+]
+],
+[
+"1870",
+"forkston",
+"Census at Forkston, Wyoming Co.",
+0,
+[
+{
+"s": "1870 U.S. census index",
+"u": "https://www.familysearch.org/ark:/61903/1:2:M4V5-7ZL"
+}
+]
+],
+[
+"1880",
+"burlington",
+"Census: aged 73; his father and mother both born in Connecticut. Adolphus D. Slater lives two doors away",
+0,
+[
+{
+"s": "1880 U.S. census, Burlington, ED 6",
+"u": "https://www.familysearch.org/ark:/61903/3:1:33S7-9YBK-9FC8"
+}
+]
+],
+[
+"1882",
+"ntowanda",
+"Died 7 July, aged 73; buried Pail Factory Cemetery, North Towanda",
+0,
+[
+{
+"s": "Pail Factory Cemetery reading (Tri-Counties Genealogy)",
+"u": "https://joycetice.com/cemb/pailfact.htm"
+},
+{
+"s": "Evidence for his parents",
+"u": "roswell.html"
+}
+]
+]
+]
+},
+{
+"n": "Edwin E. Slater",
+"d": "1845–1931",
+"conf": "d",
+"ev": [
+[
+"1845",
+"auburn",
+"Born 27 April, Pennsylvania (place approximate)",
+0,
+[
+{
+"s": "FamilySearch Family Tree L4TW-FLT and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L4TW-FLT"
+}
+]
+],
+[
+"1860",
+"auburn",
+"With his parents in Auburn Twp.",
+0,
+[
+{
+"s": "1860 U.S. census index, Auburn",
+"u": "https://www.familysearch.org/ark:/61903/1:2:MHT8-H17"
+}
+]
+],
+[
+"1870",
+"forkston",
+"Forkston, Wyoming Co.; married Alice A. Adams c.1868",
+0,
+[
+{
+"s": "FamilySearch Family Tree L4TW-FLT and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L4TW-FLT"
+}
+]
+],
+[
+"1900",
+"burlington",
+"Farming in Burlington Twp. through 1930; later married Agnes Scouten",
+0,
+[
+{
+"s": "FamilySearch Family Tree L4TW-FLT and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L4TW-FLT"
+}
+]
+],
+[
+"1931",
+"burlington",
+"Died 16 February, Burlington",
+0,
+[
+{
+"s": "FamilySearch Family Tree L4TW-FLT and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/L4TW-FLT"
+}
+]
+]
+]
+},
+{
+"n": "Harry Grover Slater",
+"d": "1888–1955",
+"conf": "d",
+"ev": [
+[
+"1888",
+"burlington",
+"Born 1 October, Pennsylvania",
+0,
+[
+{
+"s": "Obituary, \"Harry Slater of Burlington Dies; Retired Farmer\" (1955; clipping in family papers)"
+}
+]
+],
+[
+"1910",
+"burlington",
+"Married Mertie Helena Hemenway, 26 October, Bradford Co.",
+0,
+[
+{
+"s": "FamilySearch Family Tree LW77-TRC and its attached sources (original record not yet re-checked)",
+"u": "https://www.familysearch.org/tree/person/details/LW77-TRC"
+}
+]
+],
+[
+"1950",
+"burlington",
+"Farmer in Burlington Twp. in every census 1900–1950",
+0,
+[
+{
+"s": "1950 U.S. census, Burlington, ED 8-14, sheet 6",
+"u": "https://1950census.archives.gov/"
+},
+{
+"s": "1940 U.S. census, Burlington, sheet 6A"
+}
+]
+],
+[
+"1955",
+"towanda",
+"Died 2 March at Towanda; buried Bradford County Memorial Park",
+0,
+[
+{
+"s": "Obituary, \"Harry Slater of Burlington Dies; Retired Farmer\" (1955; clipping in family papers)"
+}
+]
+]
+]
+},
+{
+"n": "Kenneth Harry Slater",
+"d": "1927–1987",
+"conf": "d",
+"ev": [
+[
+"1927",
+"burlington",
+"Born 3 April, Pennsylvania; in his parents' household in the 1930 and 1940 censuses",
+0,
+[
+{
+"s": "1930 and 1940 U.S. censuses, Burlington"
+},
+{
+"s": "Social Security Death Index"
+}
+]
+],
+[
+"1944",
+"troy",
+"Unconfirmed lead: a \"Kenneth Slater\" in the Troy High School yearbook (index entry only)",
+1,
+[
+{
+"s": "Ancestry, U.S. School Yearbooks (index only)"
+}
+]
+],
+[
+"1945",
+"burlington",
+"WWII draft registration, Pennsylvania",
+0,
+[
+{
+"s": "WWII draft registration, 1945 (Ancestry)"
+}
+]
+],
+[
+"c.1948–51",
+"barbourville",
+"Attended Union College, Barbourville, Kentucky, where he met Helen Louise Bostic of Clearfield, Tennessee; they married in 1951 (Helen's obituary, Athens Messenger, 27 Oct 2023, calls him 'the future Reverend Kenneth Slater of Towanda, PA'). The 1950 census lists a Kenneth Slater, 23, b. Pennsylvania, WWII veteran, student at Union College. Union College yearbook Stespean 1951: 'Kenneth H. Slater, Towanda, Pennsylvania, A. B., January 1951 … Profession sought: Ministry'. Married Helen Louise Bostic 16 March 1951 (Who's Who in the Methodist Church, 1966)",
+0,
+[
+{
+"s": "Union College yearbook, Stespean (1951)",
+"u": "https://archive.org/details/stespean1951unio"
+},
+{
+"s": "Obituary of Helen Slater, Athens Messenger, 27 Oct 2023"
+},
+{
+"s": "1950 U.S. census, Barbourville"
+}
+]
+],
+[
+"1951–53",
+"hazard",
+"Pastor in Hazard, Kentucky, 1951–53 (Who's Who in the Methodist Church, 1966); associate pastor of the Bowman Memorial Methodist Church; a member on trial in the Central New York Conference (First Congregational Church of Braintree history, 1957)",
+0,
+[
+{
+"s": "Who's Who in the Methodist Church (1966)",
+"u": "https://archive.org/details/whoswhoinmethodi0000unse_k6s9"
+},
+{
+"s": "Shuster, Gathered in 1707 (1957)",
+"u": "https://archive.org/details/gatheredin1707hi00shus"
+}
+]
+],
+[
+"1952–53",
+"braintree",
+"Assistant minister, First Congregational Church, Braintree, Massachusetts, Sept 1952 – June 1953, while a Boston University theology student; 'a native of Towanda, Pa.' (Gathered in 1707, 1957)",
+0,
+[
+{
+"s": "Shuster, Gathered in 1707: First Congregational Church, Braintree (1957)",
+"u": "https://archive.org/details/gatheredin1707hi00shus"
+}
+]
+],
+[
+"1954",
+"boston",
+"Graduated S.T.B. (Bachelor of Sacred Theology) from Boston University School of Theology, 1954, listed as 'Kenneth Harry Slater' (BU School of Theology graduate list); Helen was with him in Boston (family recollection)",
+0,
+[
+{
+"s": "BU School of Theology graduates, 1951–1960",
+"u": "https://www.bu.edu/sth-history/graduates/1951-2000/busth-1951-1960/"
+}
+]
+],
+[
+"1954–57",
+"morrisville",
+"Field work assistant at Morrisville, N.Y., 1954–57 (Who's Who in the Methodist Church, 1966); 'Rev. Kenneth Slater of Morrisville, N.Y.' in his father's 1955 obituary",
+0,
+[
+{
+"s": "Who's Who in the Methodist Church (1966)",
+"u": "https://archive.org/details/whoswhoinmethodi0000unse_k6s9"
+},
+{
+"s": "Obituary, \"Harry Slater of Burlington Dies; Retired Farmer\" (1955; clipping in family papers)"
+}
+]
+],
+[
+"1957–59",
+"roanoke",
+"Pastor in Roanoke, Virginia, 1957–59 (Who's Who in the Methodist Church, 1966); General Minutes record transfers 'K. H. Slater, Va.' 1957 and back to Central New York 22 May 1959",
+0,
+[
+{
+"s": "Who's Who in the Methodist Church (1966)",
+"u": "https://archive.org/details/whoswhoinmethodi0000unse_k6s9"
+},
+{
+"s": "General Minutes of the Methodist Church, 1957, 1959"
+}
+]
+],
+[
+"1959–61",
+"wellsburg",
+"Pastor at Wellsburg and Lowman, N.Y., 1959–61 (Who's Who in the Methodist Church, 1966)",
+0,
+[
+{
+"s": "Who's Who in the Methodist Church (1966)",
+"u": "https://archive.org/details/whoswhoinmethodi0000unse_k6s9"
+}
+]
+],
+[
+"1961–66",
+"lyons",
+"Pastor at Lyons, New York, from 1961 (Who's Who in the Methodist Church, 1966): listed 'Lyons — Kenneth H. Slater' in the General Minutes of the Methodist Church for 1964, 1965 and 1966 (and in 1962–63 sources)",
+0,
+[
+{
+"s": "General Minutes of the Methodist Church, 1965",
+"u": "https://archive.org/details/generalminutesof0000meth_j3f9"
+},
+{
+"s": "General Minutes, 1966",
+"u": "https://archive.org/details/generalminutesof1966meth"
+}
+]
+],
+[
+"1967–70",
+"wilmington",
+"Registrar, Wilmington College, Ohio — listed among Methodist ministers in special appointments ('Reg. Wilmington Coll.') in the General Minutes, 1967–1970",
+0,
+[
+{
+"s": "General Minutes of the Methodist Church, 1967–1970"
+}
+]
+],
+[
+"1968",
+"portwilliam",
+"'Port William United Methodist Church, Rev. Kenneth Slater, minister' (Wilmington News Journal, May 1968)",
+0,
+[
+{
+"s": "Wilmington News Journal, May 1968"
+}
+]
+],
+[
+"by 1987",
+"athens",
+"Lived here as director of student records at Ohio University and a Methodist minister, living in Athens. Buried Athens County Memory Gardens after services Monday 15 June (Wilmington News-Journal, 18 June 1987)",
+0,
+[
+{
+"s": "Wilmington News-Journal, 18 June 1987",
+"u": "https://www.newspapers.com/image/877998676/"
+}
+]
+],
+[
+"1987",
+"columbus",
+"Died Friday 12 June at St. Anthony's Hospital, Columbus (1987 obituary)",
+0,
+[
+{
+"s": "Wilmington News-Journal, 18 June 1987",
+"u": "https://www.newspapers.com/image/877998676/"
+},
+{
+"s": "Ohio Death Records index (Ancestry)"
+}
+]
+]
+]
+}
 ];
 const svg=d3.select("#map"), W=800, H=560;
 const proj=d3.geoConicConformal().parallels([39,42]).rotate([78,0]);
@@ -256,11 +1052,13 @@ function draw(){
   document.querySelectorAll(".gen").forEach((el,i)=>{el.classList.toggle("on",i===sel);el.setAttribute("aria-expanded",i===sel)});
   document.getElementById("all").setAttribute("aria-pressed",sel<0);
 }
+const esc=t=>String(t).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+function srcHTML(list){if(!list||!list.length)return "";return `<span class="src"><b>Source${list.length>1?"s":""}:</b> ${list.map(x=>x.u?`<a href="${x.u}" target="${x.u.endsWith(".html")?"_self":"_blank"}" rel="noopener">${esc(x.s)}</a>`:esc(x.s)).join("; ")}</span>`}
 const led=document.getElementById("ledger");
-G.forEach((g,i)=>{const b=document.createElement("button");b.className="gen";b.id="gen"+i;
+G.forEach((g,i)=>{const b=document.createElement("div");b.className="gen";b.id="gen"+i;b.tabIndex=0;b.setAttribute("role","button");
   b.innerHTML=`<span class="num">${String(i+1).padStart(2,"0")}</span><span><span class="gname">${g.n}</span><span class="dates">${g.d}</span><br><span class="conf ${g.conf}">${g.conf==="d"?"Link to parent documented":"Link to parent probable"}</span></span>
-  <ul class="events">${g.ev.map(e=>`<li><span class="y">${e[0]}</span><span>${e[2]}<br><span class="pl">${P[e[1]].n}</span></span></li>`).join("")}</ul>`;
-  b.onclick=()=>{stop();cur=(cur===i?-1:i);draw()};led.appendChild(b)});
+  <ul class="events">${g.ev.map(e=>`<li><span class="y">${e[0]}</span><span>${e[2]}<br><span class="pl">${P[e[1]].n}</span>${srcHTML(e[4])}</span></li>`).join("")}</ul>`;
+  b.onclick=(ev)=>{if(ev.target.closest("a"))return;stop();cur=(cur===i?-1:i);draw()};b.onkeydown=(ev)=>{if((ev.key==="Enter"||ev.key===" ")&&!ev.target.closest("a")){ev.preventDefault();b.click()}};led.appendChild(b)});
 let timer=null;
 function stop(){if(timer){clearInterval(timer);timer=null;document.getElementById("play").textContent="Play the migration"}}
 document.getElementById("all").onclick=()=>{stop();cur=-1;draw()};
